@@ -10,3 +10,6 @@ export const bookSchema = z.object({
   copies: z.number().int().nonnegative({ message: "Copies must be a non-negative integer" }),
   description: z.string().trim().optional(),
 })
+
+// For PATCH/PUT operations (optional fields)
+export const partialBookSchema = bookSchema.partial()

@@ -47,4 +47,26 @@ const bookSchema = new Schema<IBook>(
   },
 ) 
 
+// Instance method to update availability based on copies
+bookSchema.methods.updateAvailability = async function (): Promise<void> {
+    this.available = this.copies > 0
+    await this.save()
+  }
+  
+  // Static method to find available books
+  bookSchema.statics.findAvailableBooks = function (): Promise<IBook[]> {
+    return this.find({ available: true })
+  }
+  
+  // Pre-save middleware to automatically set availability
+  bookSchema.pre("save", function (next) {
+    this.available = this.copies > 0
+    next()
+  })
+  
+  // Post-save middleware 
+  bookSchema.post("save", (doc) => {
+    console.log(`Book saved: ${doc.title} - Available: ${doc.available}`)
+  })
+
 export const Book = model("Book", bookSchema)

@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { Book } from "../models/BookModel"
-import { bookSchema } from "../middleware/validation"
+import { bookSchema, partialBookSchema } from "../middleware/validation"
 
 export const createBook = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -101,6 +101,49 @@ export const getAllBooks = async (req: Request, res: Response): Promise<void> =>
         message: "Failed to retrieve book",
         success: false,
         error: error,
+      })
+    }
+  }
+
+
+  export const updateBook = async (req: Request, res: Response): Promise<void> => {
+    const result = partialBookSchema.safeParse(req.body)
+  
+    if (!result.success) {
+      res.status(400).json({
+        message: "Validation failed",
+        success: false,
+        error: result.error.flatten().fieldErrors,
+      })
+      return
+    }
+  
+    try {
+      const { bookId } = req.params
+      const updatedBook = await Book.findByIdAndUpdate(bookId, result.data, {
+        new: true,
+        runValidators: true,
+      })
+  
+      if (!updatedBook) {
+        res.status(404).json({
+          message: "Book not found",
+          success: false,
+          error: "Book with the specified ID does not exist",
+        })
+        return
+      }
+  
+      res.status(200).json({
+        success: true,
+        message: "Book updated successfully",
+        data: updatedBook,
+      })
+    } catch (error: any) {
+      res.status(400).json({
+        message: "Failed to update book",
+        success: false,
+        error: error.message || error,
       })
     }
   }
