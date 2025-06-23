@@ -1,7 +1,6 @@
 import type { Request, Response, NextFunction } from "express"
 
 export const errorHandler = (error: any, req: Request, res: Response, next: NextFunction): void => {
-  console.error("Error:", error)
 
   if (error.name === "ValidationError") {
     res.status(400).json({
