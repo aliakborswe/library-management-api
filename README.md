@@ -69,5 +69,5 @@ Example: `/api/books?filter=FANTASY&sortBy=createdAt&sort=desc&limit=5`
 - Express.js
 - TypeScript
 - MongoDB with Mongoose
-- Express Validator
+- Zod Validator
 - CORS
