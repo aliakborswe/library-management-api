@@ -106,7 +106,7 @@ export const getAllBooks = async (req: Request, res: Response): Promise<void> =>
   }
 
 
-  export const updateBook = async (req: Request, res: Response): Promise<void> => {
+export const updateBook = async (req: Request, res: Response): Promise<void> => {
     const result = partialBookSchema.safeParse(req.body)
   
     if (!result.success) {
@@ -120,12 +120,9 @@ export const getAllBooks = async (req: Request, res: Response): Promise<void> =>
   
     try {
       const { bookId } = req.params
-      const updatedBook = await Book.findByIdAndUpdate(bookId, result.data, {
-        new: true,
-        runValidators: true,
-      })
+      const book = await Book.findById(bookId)
   
-      if (!updatedBook) {
+      if (!book) {
         res.status(404).json({
           message: "Book not found",
           success: false,
@@ -133,11 +130,13 @@ export const getAllBooks = async (req: Request, res: Response): Promise<void> =>
         })
         return
       }
-  
+      // Update the book with the new data
+      Object.assign(book, result.data)
+      await book.save()
       res.status(200).json({
         success: true,
         message: "Book updated successfully",
-        data: updatedBook,
+        data: book,
       })
     } catch (error: any) {
       res.status(400).json({

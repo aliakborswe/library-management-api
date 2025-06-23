@@ -1,4 +1,3 @@
-import mongoose from "mongoose";
 import { Borrow } from "../models/BorrowModel";
 import { Book } from "../models/BookModel";
 import { Request, Response } from "express";
@@ -18,13 +17,11 @@ export const borrowBook = async (req: Request, res: Response): Promise<void> => 
   
     const { book: bookId, quantity, dueDate } = validation.data
   
-    const session = await mongoose.startSession()
-    session.startTransaction()
-  
+    
     try {
-      const book = await Book.findById(bookId).session(session)
+
+      const book = await Book.findById(bookId)
       if (!book) {
-        await session.abortTransaction()
         res.status(404).json({
           message: "Book not found",
           success: false,
@@ -34,7 +31,6 @@ export const borrowBook = async (req: Request, res: Response): Promise<void> => 
       }
   
       if (book.copies < quantity) {
-        await session.abortTransaction()
         res.status(400).json({
           message: "Insufficient copies available",
           success: false,
@@ -42,19 +38,17 @@ export const borrowBook = async (req: Request, res: Response): Promise<void> => 
         })
         return
       }
-  
+      // update book availability
       book.copies -= quantity
       await book.updateAvailability()
-      await book.save({ session })
-  
+  // create borrow record
       const borrowRecord = new Borrow({
         book: bookId,
         quantity,
         dueDate: new Date(dueDate),
       })
-      await borrowRecord.save({ session })
+      await borrowRecord.save()
   
-      await session.commitTransaction()
   
       res.status(201).json({
         success: true,
@@ -62,14 +56,11 @@ export const borrowBook = async (req: Request, res: Response): Promise<void> => 
         data: borrowRecord,
       })
     } catch (error: any) {
-      await session.abortTransaction()
       res.status(400).json({
         message: "Failed to borrow book",
         success: false,
         error: error.message || error,
       })
-    } finally {
-      session.endSession()
     }
   }
 
