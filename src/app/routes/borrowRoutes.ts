@@ -3,7 +3,7 @@ import { borrowBook, getBorrowedBooksSummary } from "../controllers/borrowContro
 
 const router = Router();
 
-router.post("/", borrowBook)
 router.get("/", getBorrowedBooksSummary)
+router.post("/", borrowBook)
 
 export default router;
