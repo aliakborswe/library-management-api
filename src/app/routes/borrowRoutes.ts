@@ -4,6 +4,6 @@ import { borrowBook, getBorrowedBooksSummary } from "../controllers/borrowContro
 const router = Router();
 
 router.get("/", getBorrowedBooksSummary)
-router.post("/", borrowBook)
+router.post("/:bookId", borrowBook);
 
 export default router;

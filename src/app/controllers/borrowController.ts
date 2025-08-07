@@ -14,12 +14,13 @@ export const borrowBook = async (req: Request, res: Response): Promise<void> => 
       })
       return
     }
+
   
-    const { book: bookId, quantity, dueDate } = validation.data
+    const { quantity, dueDate } = validation.data
   
     
     try {
-
+      const { bookId } = req.params;
       const book = await Book.findById(bookId)
       if (!book) {
         res.status(404).json({
