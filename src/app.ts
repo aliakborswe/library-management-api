@@ -6,6 +6,11 @@ import borrowRoutes from "./app/routes/borrowRoutes";
 const app: Application = express();
 app.use(cors());
 app.use(express.json());
+app.use(
+  cors({
+    origin: ["http://localhost:5173"],
+  })
+);
 
 // Routes
 app.use("/api/books", bookRoutes);
