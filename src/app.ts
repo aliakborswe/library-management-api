@@ -13,8 +13,8 @@ app.use(
 );
 
 // Routes
-app.use("/api/books", bookRoutes);
-app.use("/api/borrow", borrowRoutes);
+app.use("/books", bookRoutes);
+app.use("/borrow", borrowRoutes);
 
 app.get("/", (_req: Request, res: Response) => {
   res.send("Welcome to the library management system");
