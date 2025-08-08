@@ -18,6 +18,7 @@ export const bookSchema = z.object({
     .int()
     .nonnegative({ message: "Copies must be a non-negative integer" }),
   description: z.string().trim().optional(),
+  imageUrl: z.string().url(),
 });
 
 // For PATCH/PUT operations (optional fields)
@@ -28,13 +29,9 @@ export const borrowSchema = z.object({
     .number()
     .int()
     .min(1, { message: "Quantity must be a positive integer" }),
-  dueDate: z.string().refine(
-    (val) => {
-      const date = new Date(val);
-      return !isNaN(date.getTime()) && date > new Date();
-    },
-    {
-      message: "Due date must be in the future and valid ISO format",
-    }
-  ),
+  dueDate: z
+    .date({ message: "Due date is required" })
+    .refine((date) => date >= new Date(), {
+      message: "Due date must be in the future",
+    }),
 });
