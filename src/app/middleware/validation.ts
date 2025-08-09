@@ -30,8 +30,11 @@ export const borrowSchema = z.object({
     .int()
     .min(1, { message: "Quantity must be a positive integer" }),
   dueDate: z
-    .date({ message: "Due date is required" })
-    .refine((date) => date >= new Date(), {
+    .string({ message: "Due date is required" })
+    .refine((date) => !isNaN(Date.parse(date)), {
+      message: "Invalid date format",
+    })
+    .refine((date) => new Date(date) > new Date(), {
       message: "Due date must be in the future",
     }),
 });

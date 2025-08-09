@@ -1,7 +1,5 @@
-import { model, Schema } from "mongoose"
-import { IBorrow } from "../interfaces/borrow.interface"
-
-
+import { model, Schema } from "mongoose";
+import { IBorrow } from "../interfaces/borrow.interface";
 
 const borrowSchema = new Schema<IBorrow>(
   {
@@ -19,7 +17,7 @@ const borrowSchema = new Schema<IBorrow>(
       type: Date,
       required: [true, "Due date is required"],
       validate: {
-        validator: (value: Date) => value > new Date(),
+        validator: (value: Date) => value.getTime() > Date.now(),
         message: "Due date must be in the future",
       },
     },
@@ -27,7 +25,7 @@ const borrowSchema = new Schema<IBorrow>(
   {
     versionKey: false,
     timestamps: true,
-  },
-)
+  }
+);
 
-export const Borrow = model("Borrow", borrowSchema)
+export const Borrow = model("Borrow", borrowSchema);
