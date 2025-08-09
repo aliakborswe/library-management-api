@@ -89,6 +89,7 @@ export const getBorrowedBooksSummary = async (req: Request, res: Response): Prom
           $project: {
             _id: 0,
             book: {
+              _id: "$bookDetails._id",
               title: "$bookDetails.title",
               isbn: "$bookDetails.isbn",
             },
