@@ -58,6 +58,8 @@ export const getAllBooks = async (req: Request, res: Response): Promise<void> =>
       const sortOrder = sort === "desc" ? -1 : 1
       const sortObj: any = {}
       sortObj[sortBy as string] = sortOrder
+
+      const totalBooks = await Book.countDocuments(query);
   
       const books = await Book.find(query)
         .sort(sortObj)
@@ -68,6 +70,7 @@ export const getAllBooks = async (req: Request, res: Response): Promise<void> =>
         success: true,
         message: "Books retrieved successfully",
         data: books,
+        totalBooks,
       })
     } catch (error) {
       res.status(500).json({

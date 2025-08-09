@@ -1,7 +1,13 @@
 import { Router } from "express";
-import { createBook, deleteBook, getAllBooks, getBookById, updateBook } from "../controllers/bookController";
+import {
+  createBook,
+  deleteBook,
+  getAllBooks,
+  getBookById,
+  updateBook,
+} from "../controllers/bookController";
 
-const router = Router()
+const router = Router();
 
 router.get("/", getAllBooks);
 router.get("/:bookId", getBookById);
